@@ -1,6 +1,7 @@
 package lib;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class UserQueryParser {
 
@@ -89,11 +90,43 @@ public class UserQueryParser {
     // Parse DELETE
     private String parseDelete(String sql) {
 
-        String where = sql.split("(?i)WHERE")[1];
+        if (!sql.toUpperCase().contains("WHERE")) {
+            return "Invalid DELETE syntax";
+        }
+
+        String[] parts = sql.split("(?i)WHERE");
+        if (parts.length != 2) {
+            return "Invalid DELETE syntax";
+        }
+
+        String where = parts[1].trim();
+
+        if (!where.contains("=")) {
+            return "Invalid DELETE syntax";
+        }
+
         String[] w = where.split("=");
+        if (w.length != 2) {
+            return "Invalid DELETE syntax";
+        }
+
+        String field = w[0].trim();
+        String value = w[1].trim();
+
+        if (!field.equalsIgnoreCase("id")) {
+            return "Invalid field in DELETE";
+        }
+
+        int id;
+        try {
+            id = Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return "Invalid id value";
+        }
 
         int removed = engine.delete(
-                engine.equals(w[0].trim(), w[1].trim()));
+                engine.equals("id", id)
+        );
 
         return removed + " removed";
     }
@@ -106,18 +139,44 @@ public class UserQueryParser {
 
         String wherePart = sql.split("(?i)WHERE")[1];
 
-        Map<String,Object> values = new HashMap<>();
+        Map<String, Object> values = new HashMap<>();
 
         for (String assign : setPart.split(",")) {
+
             String[] p = assign.split("=");
-            values.put(p[0].trim(),
-                    p[1].replace("'","").trim());
+
+            String field = p[0].trim();
+            String value = p[1].replace("'", "").trim();
+
+            if (field.equalsIgnoreCase("id")) {
+                values.put(field, Integer.parseInt(value));
+            } else {
+                values.put(field, value);
+            }
         }
 
         String[] w = wherePart.split("=");
 
-        int updated = engine.update(values,
-                engine.equals(w[0].trim(), w[1].trim()));
+        String whereField = w[0].trim();
+        String whereValue = w[1].replace("'", "").trim();
+
+        int updated;
+
+        if (whereField.equalsIgnoreCase("id")) {
+
+            int id = Integer.parseInt(whereValue);
+            updated = engine.update(
+                    values,
+                    engine.equals("id", id)
+            );
+
+        } else {
+
+            updated = engine.update(
+                    values,
+                    engine.equals(whereField, whereValue)
+            );
+        }
 
         return updated + " updated";
     }

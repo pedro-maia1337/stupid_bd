@@ -159,4 +159,13 @@ public class UserQuery {
             default -> false;
         };
     }
+
+    public Predicate<Users> equals(String field, int value) {
+        return user -> {
+            if (field.equalsIgnoreCase("id")) {
+                return user.getId() == value;
+            }
+            return false;
+        };
+    }
 }

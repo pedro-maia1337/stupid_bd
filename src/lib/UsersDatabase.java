@@ -41,4 +41,9 @@ public class UsersDatabase {
 
         return users;
     }
+
+    public static void clear() {
+        getAllUsers().clear();
+    }
+
 }
