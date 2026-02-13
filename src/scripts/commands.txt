@@ -1,0 +1,13 @@
+javac lib/*.java QueryShell.java; jshell --class-path .
+import lib.*;
+/open QueryShell.java
+QueryShell shell = new QueryShell();
+
+QueryShell shell = new QueryShell();
+
+shell.run("INSERT INTO users VALUES ('Pedro',22,'SP')");
+shell.run("INSERT INTO users VALUES ('Maria',30,'RJ')");
+shell.run("SELECT * FROM users");
+shell.run("SELECT name FROM users WHERE name LIKE 'Pe'");
+shell.run("SELECT * FROM users WHERE age BETWEEN 20 AND 30");
+shell.run("SELECT city FROM users GROUP BY city");
