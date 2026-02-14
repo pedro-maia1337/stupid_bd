@@ -148,8 +148,12 @@ public class UserQueryParser {
             String field = p[0].trim();
             String value = p[1].replace("'", "").trim();
 
-            if (field.equalsIgnoreCase("id")) {
-                values.put(field, Integer.parseInt(value));
+            if (field.equalsIgnoreCase("id") || field.equalsIgnoreCase("age")) {
+                try {
+                    values.put(field, Integer.parseInt(value));
+                } catch (NumberFormatException e) {
+                    values.put(field, value);
+                }
             } else {
                 values.put(field, value);
             }
