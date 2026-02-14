@@ -33,5 +33,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="antlr4-runtime-4.13.1" level="project" />
   </component>
 </module>

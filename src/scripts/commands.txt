@@ -1,13 +1,8 @@
-javac lib/*.java QueryShell.java; jshell --class-path .
+javac -d out\production\stupid_bd -cp "C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" src\lib\*.java src\lib\parser\*.java
+jshell --class-path "out\production\stupid_bd;C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar"
+
 import lib.*;
-/open QueryShell.java
-QueryShell shell = new QueryShell();
-
-QueryShell shell = new QueryShell();
-
-shell.run("INSERT INTO users VALUES ('Pedro',22,'SP')");
-shell.run("INSERT INTO users VALUES ('Maria',30,'RJ')");
-shell.run("SELECT * FROM users");
-shell.run("SELECT name FROM users WHERE name LIKE 'Pe'");
-shell.run("SELECT * FROM users WHERE age BETWEEN 20 AND 30");
-shell.run("SELECT city FROM users GROUP BY city");
+import lib.parser.*;
+UserQueryParser parser = new UserQueryParser();
+String result = parser.execute("SELECT * FROM users");
+System.out.println(result);
