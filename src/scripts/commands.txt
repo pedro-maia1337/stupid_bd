@@ -1,8 +1,2 @@
-javac -d out\production\stupid_bd -cp "C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" src\lib\*.java src\lib\parser\*.java
-jshell --class-path "out\production\stupid_bd;C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar"
-
-import lib.*;
-import lib.parser.*;
-UserQueryParser parser = new UserQueryParser();
-String result = parser.execute("SELECT * FROM users");
-System.out.println(result);
+javac -d out\production\stupid_bd -cp "C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" src\QueryShell.java src\lib\*.java src\lib\parser\*.java
+java -cp "out\production\stupid_bd;C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" QueryShell
