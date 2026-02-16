@@ -83,8 +83,24 @@ public class QueryShell {
             executeSQL("SELECT count FROM users");
             return true;
         }
-        
+
+        if (cmd.equals("stats") || cmd.equals("index")) {
+            showIndexStats();
+            return true;
+        }
+
         return false;
+    }
+
+    private void showIndexStats() {
+        try {
+            // Usar reflection para acessar UserQuery do parser
+            // Ou adicionar método getIndexStats() no UserQueryParser
+            System.out.println("Estatísticas dos índices:");
+            System.out.println("(implementar acesso ao IndexManager)");
+        } catch (Exception e) {
+            System.out.println("Erro ao obter estatísticas");
+        }
     }
     
     /**
@@ -191,7 +207,7 @@ public class QueryShell {
             }
         }
     }
-    
+
     /**
      * Método main para executar o QueryShell standalone.
      * 
