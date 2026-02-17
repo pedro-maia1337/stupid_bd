@@ -19,10 +19,12 @@ REM ================================================================
 echo [1/2] Compilando...
 javac -d out\production\stupid_bd ^
       -cp "C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" ^
+      src\lib\persistence\*.java ^
       src\lib\index\*.java ^
       src\lib\*.java ^
       src\lib\parser\*.java ^
       src\QueryShell.java
+
 
 if %errorlevel% neq 0 (
     echo.
