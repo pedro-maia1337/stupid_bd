@@ -8,6 +8,9 @@ import org.antlr.v4.runtime.tree.*;
 /**
  * Parser de queries SQL usando ANTLR4.
  * Substitui o parser manual anterior mantendo a mesma interface.
+ *
+ * @author SQL Parser Team
+ * @version 3.0
  */
 public class UserQueryParser {
 
@@ -19,88 +22,131 @@ public class UserQueryParser {
 
     /**
      * Executa uma query SQL usando o parser ANTLR4.
+     *
+     * @param sql Comando SQL a executar
+     * @return Resultado da execução ou mensagem de erro prefixada com "Invalid"
      */
     public String execute(String sql) {
         try {
             // Validar entrada vazia
             if (sql == null || sql.trim().isEmpty()) {
-                return "Comando inválido: Empty query";
+                return "Invalid: Empty query";
             }
-            
+
             // Criar lexer a partir da string SQL
             SQLiteSimpleLexer lexer = new SQLiteSimpleLexer(CharStreams.fromString(sql));
-            
+
             // Criar stream de tokens
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            
+
             // Criar parser
             SQLiteSimpleParser parser = new SQLiteSimpleParser(tokens);
-            
+
             // Remover error listeners padrão
             parser.removeErrorListeners();
-            
+
             // Flag para capturar erro de sintaxe
             final boolean[] hasError = {false};
-            
+            final String[] errorMessage = {null};
+
             // Adicionar custom error listener
             parser.addErrorListener(new BaseErrorListener() {
                 @Override
                 public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
-                                      int line, int charPositionInLine, 
-                                      String msg, RecognitionException e) {
+                                        int line, int charPositionInLine,
+                                        String msg, RecognitionException e) {
                     hasError[0] = true;
-                    throw new RuntimeException("Comando inválido: SQL syntax error");
+                    errorMessage[0] = msg;
                 }
             });
-            
+
             // Parse da query (ponto de entrada da gramática)
             ParseTree tree = parser.parse();
-            
-            // Se houve erro, retornar
+
+            // Se houve erro de sintaxe, retornar
             if (hasError[0]) {
-                return "Comando inválido: Syntax error";
+                return "Invalid: SQL syntax error" +
+                        (errorMessage[0] != null ? " - " + errorMessage[0] : "");
             }
-            
+
             // Criar visitor e executar
             SQLVisitor visitor = new SQLVisitor(engine);
             Object result = visitor.visit(tree);
-            
-            // Se o visitor retornou uma string com erro, processar
+
+            // Processar resultado do visitor
             if (result != null) {
                 String resultStr = result.toString();
-                
-                // Se começa com "ERRO:", transformar em "Invalid"
+
+                // Normalizar mensagens de erro
+                // Converter qualquer variação para "Invalid:"
                 if (resultStr.startsWith("ERRO:")) {
-                    return "Invalid: " + resultStr.substring(6);
+                    return "Invalid:" + resultStr.substring(5);
                 }
-                
-                // Se já é "Invalid", manter
+
+                if (resultStr.startsWith("Comando inválido:") ||
+                        resultStr.startsWith("Comando invalido:")) {
+                    return "Invalid:" + resultStr.substring(resultStr.indexOf(":"));
+                }
+
+                // Se já começa com "Invalid", garantir formato consistente
                 if (resultStr.startsWith("Invalid")) {
+                    // Garantir que tem : depois de Invalid
+                    if (resultStr.length() > 7 && resultStr.charAt(7) != ':') {
+                        return "Invalid: " + resultStr.substring(7).trim();
+                    }
                     return resultStr;
                 }
-                
-                // Resultado normal
+
+                // Resultado normal (sucesso)
                 return resultStr;
             }
-            
+
             // Retornar OK se não há resultado
             return "OK";
-            
+
         } catch (RuntimeException e) {
             // Erro de sintaxe ou validação
             String msg = e.getMessage();
-            
-            // Se a mensagem já contém "Invalid" ou "Comando inválido", retornar direto
-            if (msg != null && (msg.contains("Invalid") || msg.contains("Comando inválido"))) {
+
+            if (msg == null) {
+                return "Invalid: Runtime error";
+            }
+
+            // Normalizar mensagens de erro para "Invalid:"
+            if (msg.startsWith("ERRO:")) {
+                return "Invalid:" + msg.substring(5);
+            }
+
+            if (msg.startsWith("Comando inválido:") ||
+                    msg.startsWith("Comando invalido:")) {
+                return "Invalid:" + msg.substring(msg.indexOf(":"));
+            }
+
+            if (msg.startsWith("Invalid")) {
+                // Já começa com Invalid, garantir formato
+                if (msg.length() > 7 && msg.charAt(7) != ':') {
+                    return "Invalid: " + msg.substring(7).trim();
+                }
                 return msg;
             }
-            
-            // Caso contrário, adicionar prefixo apropriado
-            return "Invalid: " + (msg != null ? msg : "Syntax error");
-            
+
+            // Adicionar prefixo Invalid a outras mensagens
+            return "Invalid: " + msg;
+
         } catch (Exception e) {
-            // Outros erros
-            return "Comando inválido: " + e.getMessage();
+            // Outros erros inesperados
+            String msg = e.getMessage();
+            return "Invalid: " + (msg != null ? msg : "Unexpected error");
         }
+    }
+
+    /**
+     * Retorna a engine UserQuery subjacente.
+     * Útil para testes e diagnóstico.
+     *
+     * @return Instância do UserQuery
+     */
+    public UserQuery getEngine() {
+        return engine;
     }
 }

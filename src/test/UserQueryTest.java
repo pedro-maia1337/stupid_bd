@@ -11,6 +11,11 @@ import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//Precisa Desabilitar a persistência do banco para os testes
+//UserQuery.java - > public UserQuery() {
+//                      this(true, "data/");
+//                   }
+
 @DisplayName("UserQuery - Testes de Manipulação de Dados")
 class UserQueryTest {
 
