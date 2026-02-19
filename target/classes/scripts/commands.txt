@@ -1,0 +1,23 @@
+javac -d out\production\stupid_bd -cp "/home/loona/.m2/repository/org/antlr/antlr4-runtime/4.13.1/antlr4-runtime-4.13.1.jar" src\main.java.lib.QueryShell.java src\lib\*.java src\lib\parser\*.java
+java -cp "out\production\stupid_bd;C:\Users\loona\.m2\repository\org\antlr\antlr4-runtime\4.13.1\antlr4-runtime-4.13.1.jar" main.java.lib.QueryShell
+
+java -cp "out\production\stupid_bd;antlr-jar" network.main.lib.SQLClient localhost 5433
+java -cp "out\production\stupid_bd;antlr-jar" network.main.lib.SQLClient localhost 5433
+
+javac -d out\production\stupid_bd -cp "antlr-jar;out\production\stupid_bd" src\lib\*.java src\lib\network\*.java src\lib\persistence\*.java src\lib\index\*.java
+
+Cliente SQL
+    ↓
+[Rede - Socket/HTTP]
+    ↓
+Servidor SQL
+    ↓
+Parser ANTLR4 (SQLite.g4)
+    ↓
+AST (Abstract Syntax Tree)
+    ↓
+Visitor Pattern
+    ↓
+Query Executor
+    ↓
+Storage Engine (ArrayList/Arquivo/B-Tree)
