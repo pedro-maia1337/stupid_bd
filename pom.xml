@@ -65,6 +65,17 @@
                         </configuration>
                     </execution>
 
+                    <!-- CLIENTE -->
+                    <execution>
+                        <id>run-client</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>lib.network.SQLClient</mainClass>
+                        </configuration>
+                    </execution>
+
                     <execution>
                         <id>run-shell</id>
                         <goals>

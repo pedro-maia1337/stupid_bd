@@ -4,6 +4,11 @@ java -cp "out\production\stupid_bd;C:\Users\loona\.m2\repository\org\antlr\antlr
 java -cp "out\production\stupid_bd;antlr-jar" network.main.lib.SQLClient localhost 5433
 java -cp "out\production\stupid_bd;antlr-jar" network.main.lib.SQLClient localhost 5433
 
+mvn exec:java@run-server
+mvn exec:java@run-shell
+
+mvn exec:java -Dexec.mainClass="lib.network.SQLClient" -Dexec.args="localhost 5432"
+
 javac -d out\production\stupid_bd -cp "antlr-jar;out\production\stupid_bd" src\lib\*.java src\lib\network\*.java src\lib\persistence\*.java src\lib\index\*.java
 
 Cliente SQL

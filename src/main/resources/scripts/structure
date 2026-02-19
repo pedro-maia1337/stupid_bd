@@ -1,0 +1,15 @@
+Cliente SQL
+    ↓
+[Rede - Socket/HTTP]
+    ↓
+Servidor SQL
+    ↓
+Parser ANTLR4 (SQLite.g4)
+    ↓
+AST (Abstract Syntax Tree)
+    ↓
+Visitor Pattern
+    ↓
+Query Executor
+    ↓
+Storage Engine (ArrayList/Arquivo/B-Tree)
